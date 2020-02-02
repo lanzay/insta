@@ -30,6 +30,7 @@ func getJSONFromBody(body []byte) []byte {
 }
 
 type TargetType int
+
 const (
 	Page TargetType = iota
 	Tag
@@ -114,7 +115,7 @@ func getIMG(userName, userID, imgID, url string) {
 
 	folder := userName
 	if len(folder) == 0 {
-		folder = "_by_id"
+		folder = "__by_id"
 	}
 	os.MkdirAll(DATA_DIR+"/"+folder, 0666)
 

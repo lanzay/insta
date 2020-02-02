@@ -78,16 +78,15 @@ func getUserPageByScroll(queryHash string, o models.User, count, total int) {
 			//)
 
 			img := n.DisplayURL
-			log.Println(n.Owner.Username,n.Owner.ID, n.ID, img)
-			getIMG(n.Owner.Username,n.Owner.ID, n.ID, img)
+			log.Println(n.Owner.Username, n.Owner.ID, n.ID, img)
+			getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
 		}
 	}
 
 	//NextScroll
 	if src.PageInfo.HasNextPage && (total == -1 || (count+12) < total) {
 		count += 50
-		next := GetNextScroll(queryHash, "id", o.ID, count, *src.PageInfo.EndCursor)
+		next := GetNextScroll(queryHash, "id", src.Edges[0].Node.Owner.ID, count, *src.PageInfo.EndCursor)
 		getUserPageByScroll(queryHash, next.Data.User, count, total)
 	}
 }
-
