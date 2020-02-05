@@ -10,3 +10,6 @@ Scrap by:
 ```
 insta -u nasa,kyliejenner -f list.txt -t topmodel foto
 ```
+
+PS
+Собранные бинарники тут https://github.com/lanzay/insta/releases/
