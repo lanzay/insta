@@ -1,4 +1,5 @@
 # Instagram scraper
+![Go](https://github.com/lanzay/insta/workflows/Go/badge.svg)
 
 Scrape photos from Instagram without authorisation
 
