@@ -41,7 +41,7 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 	{ // doing something
 		for _, v := range src.Edges {
 			n := v.Node
-
+			hook(n)
 			//log.Println("[D] Node info:",
 			//	n.Typename, // GraphVideo
 			//	//n.EdgeMediaToCaption.Edges[0].Node.Text, // She’s teaching daddy a thing or two Snowboard session at Absolut Park in Austria! 🏂 		#rodeoand5th #travel 📹 by: @grilo
@@ -58,9 +58,9 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 			//	n.AccessibilityCaption, // Image may contain: 1 person
 			//)
 
-			img := n.DisplayURL
-			log.Println(n.Owner.Username,n.Owner.ID, n.ID, img)
-			getIMG(n.Owner.Username,n.Owner.ID, n.ID, img)
+			//img := n.DisplayURL
+			//log.Println(n.Owner.Username,n.Owner.ID, n.ID, img)
+			//getIMG(n.Owner.Username,n.Owner.ID, n.ID, img)
 		}
 	}
 	//NextScroll
@@ -70,4 +70,3 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 		getTagPageByScroll(queryHash, next.Data.Hashtag, count, total)
 	}
 }
-
