@@ -31,6 +31,11 @@ func GetPostsByUserList(list string) {
 func GetPostsByUser(user string) {
 
 	queryHash, insta := getFirstUserPage(user)
+
+	if insta == nil || len(insta.EntryData.TagPage) == 0 || len(queryHash) == 0 {
+		return
+	}
+
 	gql := insta.EntryData.ProfilePage[0].Graphql
 	src := gql.User
 	getUserPageByScroll(queryHash, src, 0, 7000)

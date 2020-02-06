@@ -13,9 +13,10 @@ func GetPostsByTag(tag string) {
 
 	queryHash, insta := getFirstTagPage(tag)
 
-	if insta == nil || len(insta.EntryData.TagPage) == 0 {
+	if insta == nil || len(insta.EntryData.TagPage) == 0 || len(queryHash) == 0 {
 		return
 	}
+
 	gql := insta.EntryData.TagPage[0].Graphql
 	src := gql.Hashtag
 	getTagPageByScroll(queryHash, src, 0, 7000)
