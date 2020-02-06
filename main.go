@@ -98,13 +98,16 @@ func getQueryHash(body []byte, targetType TargetType) string {
 	//log.Println(string(body))
 
 	_, bodyJS, _ := fasthttp.Get(nil, queryHashURL)
-	s = bytes.Index(bodyJS, targetHash) + len(targetHash)
-	e = bytes.Index(bodyJS[s:], []byte("\""))
+	var QueryHash string
+	if s = bytes.Index(bodyJS, targetHash) + len(targetHash); s > 0 {
+		if e = bytes.Index(bodyJS[s:], []byte("\"")); e > 0 {
+			QueryHash = string(bodyJS[s : s+e])
+		}
+	}
 
 	//log.Println("============================",string(targetHash))
 	//log.Println(string(bodyJS))
 
-	QueryHash := string(bodyJS[s : s+e])
 	return QueryHash
 }
 
