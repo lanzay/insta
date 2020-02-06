@@ -34,7 +34,6 @@ func hook(n models.PurpleNode) {
 
 	count = atomic.AddInt64(&count, 1)
 	img := n.DisplayURL
-	log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode) //, img)
 	go func() {
 		WG.Add(1)
 		getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
@@ -50,9 +49,13 @@ func hook(n models.PurpleNode) {
 
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 		for _, webHook := range webHooks {
-			http.Post(webHook, "application/json", bytes.NewReader(body))
+			res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
+			if err != nil || res.StatusCode != 200 {
+				log.Println("[E] POST hook", res.StatusCode, err, string(body))
+			}
 		}
 	}
+	log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
 }
 
 func getJSONFromBody(body []byte) []byte {
