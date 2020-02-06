@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync/atomic"
 	"time"
 )
 
@@ -18,7 +19,8 @@ const (
 )
 
 var (
-	DATA_DIR = "data"
+	DATA_DIR       = "data"
+	count    int64 = 0
 )
 
 func init() {
@@ -27,8 +29,9 @@ func init() {
 
 func hook(n models.PurpleNode) {
 
+	count = atomic.AddInt64(&count, 1)
 	img := n.DisplayURL
-	log.Println(n.Owner.Username, n.Owner.ID, n.ID, img)
+	log.Printf("[I] %d) %s UserID: %s IMG: %s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode) //, img)
 	getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
 
 	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)

@@ -13,6 +13,9 @@ func GetPostsByTag(tag string) {
 
 	queryHash, insta := getFirstTagPage(tag)
 
+	if insta == nil || len(insta.EntryData.TagPage) == 0 {
+		return
+	}
 	gql := insta.EntryData.TagPage[0].Graphql
 	src := gql.Hashtag
 	getTagPageByScroll(queryHash, src, 0, 7000)
@@ -36,7 +39,7 @@ func getFirstTagPage(tag string) (string, *models.Insta) {
 	var insta models.Insta
 	err = json.Unmarshal(jsonBody, &insta)
 	if err != nil {
-		log.Panicln("[E]", err)
+		log.Panicln("[E] firs page", err)
 	}
 	return queryHash, &insta
 }
