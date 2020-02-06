@@ -50,12 +50,17 @@ func hook(n models.PurpleNode) {
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 		for _, webHook := range webHooks {
 			res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
-			if err != nil || res.StatusCode != 200 {
+			if err != nil {
+				log.Println("[E] POST hook", err, string(body))
+			}
+			if err == nil && res.StatusCode != 200 {
 				log.Println("[E] POST hook", res.StatusCode, err, string(body))
 			}
 		}
 	}
-	log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
+	if count%500 == 0 {
+		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
+	}
 }
 
 func getJSONFromBody(body []byte) []byte {
