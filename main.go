@@ -38,7 +38,7 @@ func hook(n models.PurpleNode) {
 	f.Write([]byte("\n"))
 	//log.Println(string(body))
 
-	if webHooks := viper.GetStringSlice("users"); len(webHooks) != 0 {
+	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 		for _, webHook := range webHooks {
 			http.Post(webHook, "application/json", bytes.NewReader(body))
 		}
