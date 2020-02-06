@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/valyala/fasthttp"
 	"insta/models"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -106,23 +107,34 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string) *models.I
 	variables := fmt.Sprintf("{\"%s\":\"%s\",\"first\":%d,\"after\":\"%s\"}", p1, v1, count, after)
 	u := fmt.Sprintf(`https://www.instagram.com/graphql/query/?query_hash=%s&variables=%s`, query_hash, variables)
 
-	code, body, err := fasthttp.Get(nil, u)
-	if code == 429 {
+	res, err := http.Get(u)
+	if err != nil {
+		log.Println(u)
+		log.Println("[E] E001", res.StatusCode, err)
+		return nil
+	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Panicln("[E] GET.Read next scroll", res.StatusCode, u, err)
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode == 429 {
 		log.Println(u)
 		log.Println("[I] Rate limit 5000 pet hour. Wait 5 min...")
 		time.Sleep(5 * time.Minute)
 		GetNextScroll(query_hash, p1, v1, count, after)
 		return nil
 	}
-	if err != nil || code != 200 {
+	if res.StatusCode != 200 {
 		log.Println(u)
-		log.Println("[E]", code, err, string(body))
+		log.Println("[E] E001", res.StatusCode, err, string(body))
 		return nil
 	}
 
 	// JSON
 	if len(body) < 1000 {
-		log.Println("[E]", string(body))
+		log.Println("[E] E002", string(body))
 		return nil
 	}
 	jsonBody := body
@@ -130,7 +142,7 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string) *models.I
 	var insta models.InstaNext
 	err = json.Unmarshal(jsonBody, &insta)
 	if err != nil {
-		log.Println("[E]", err)
+		log.Println("[E] E003", err)
 		return nil
 	}
 	return &insta
@@ -146,7 +158,7 @@ func getIMG(userName, userID, imgID, url string) {
 
 	code, body, err := fasthttp.Get(nil, url)
 	if err != nil || code != 200 {
-		log.Panicln("[E]", code, err)
+		log.Panicln("[E] E004", code, err)
 	}
 	f, _ := os.Create(DATA_DIR + "/" + folder + "/" + userName + "-[" + userID + "]-" + imgID + ".jpg")
 	defer f.Close()
