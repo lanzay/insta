@@ -3,10 +3,10 @@ package insta
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/valyala/fasthttp"
 	"insta/models"
 	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 func GetPostsByUserList(list string) {
@@ -39,17 +39,23 @@ func GetPostsByUser(user string) {
 func getFirstUserPage(user string) (string, *models.Insta) {
 
 	u := END_POINT + user
-	code, body, err := fasthttp.Get(nil, u)
-	if err != nil || code != 200 {
-		log.Panicln("[E]", code, err)
+	res, err := http.Get(u)
+	if err != nil || res.StatusCode != 200 {
+		log.Panicln("[E] GET", res.StatusCode, u, err)
 	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Panicln("[E] GET.Read", res.StatusCode, u, err)
+	}
+	defer res.Body.Close()
+
 	queryHash := getQueryHash(body, Page)
 
 	jsonBody := getJSONFromBody(body)
 	var insta models.Insta
 	err = json.Unmarshal(jsonBody, &insta)
 	if err != nil {
-		log.Panicln("[E]", err)
+		log.Panicln("[E] JSON", err)
 	}
 	return queryHash, &insta
 }
@@ -59,8 +65,7 @@ func getUserPageByScroll(queryHash string, o models.User, count, total int) {
 	src := o.EdgeOwnerToTimelineMedia
 	{ // doing something
 		for _, v := range src.Edges {
-			n := v.Node
-			hook(n)
+			hook(v.Node)
 		}
 	}
 
