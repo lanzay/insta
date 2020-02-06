@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -20,7 +21,8 @@ const (
 )
 
 var (
-	DATA_DIR       = "data"
+	DATA_DIR = "data"
+	wg       sync.WaitGroup
 	count    int64 = 0
 )
 
@@ -33,7 +35,11 @@ func hook(n models.PurpleNode) {
 	count = atomic.AddInt64(&count, 1)
 	img := n.DisplayURL
 	log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode) //, img)
-	getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
+	go func() {
+		wg.Add(1)
+		getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
+		wg.Done()
+	}()
 
 	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)
 	defer f.Close()
@@ -156,10 +162,17 @@ func getIMG(userName, userID, imgID, url string) {
 	}
 	os.MkdirAll(DATA_DIR+"/"+folder, 0666)
 
-	code, body, err := fasthttp.Get(nil, url)
-	if err != nil || code != 200 {
-		log.Panicln("[E] E004", code, err)
+	res, err := http.Get(url)
+	if err != nil || res.StatusCode != 200 {
+		log.Panicln("[E] E004", res.StatusCode, err)
 	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Println("[E] GET.Read.IMG", res.StatusCode, url, err)
+		return
+	}
+	defer res.Body.Close()
+
 	f, _ := os.Create(DATA_DIR + "/" + folder + "/" + userName + "-[" + userID + "]-" + imgID + ".jpg")
 	defer f.Close()
 	f.Write(body)
