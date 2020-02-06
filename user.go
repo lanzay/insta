@@ -41,11 +41,11 @@ func getFirstUserPage(user string) (string, *models.Insta) {
 	u := END_POINT + user
 	res, err := http.Get(u)
 	if err != nil || res.StatusCode != 200 {
-		log.Panicln("[E] GET", res.StatusCode, u, err)
+		log.Panicln("[E] GET user", res.StatusCode, u, err)
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Panicln("[E] GET.Read", res.StatusCode, u, err)
+		log.Panicln("[E] GET.Read user", res.StatusCode, u, err)
 	}
 	defer res.Body.Close()
 

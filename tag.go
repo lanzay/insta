@@ -2,9 +2,10 @@ package insta
 
 import (
 	"encoding/json"
-	"github.com/valyala/fasthttp"
 	"insta/models"
+	"io/ioutil"
 	"log"
+	"net/http"
 )
 
 // https://www.instagram.com/explore/tags/aaa/?__a=1
@@ -20,10 +21,15 @@ func GetPostsByTag(tag string) {
 func getFirstTagPage(tag string) (string, *models.Insta) {
 
 	u := END_POINT + "explore/tags/" + tag + "/"
-	code, body, err := fasthttp.Get(nil, u)
-	if err != nil || code != 200 {
-		log.Panicln("[E]", code, err)
+	res, err := http.Get(u)
+	if err != nil || res.StatusCode != 200 {
+		log.Panicln("[E] GET tag", res.StatusCode, u, err)
 	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Panicln("[E] GET.Read tag", res.StatusCode, u, err)
+	}
+	defer res.Body.Close()
 	queryHash := getQueryHash(body, Tag)
 
 	jsonBody := getJSONFromBody(body)
