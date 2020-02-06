@@ -17,11 +17,11 @@ func init() {
 	rootCmd.PersistentFlags().StringSliceP("users", "u", []string{""}, "Instagram users name")
 	rootCmd.PersistentFlags().StringSliceP("lists", "l", []string{""}, "Files (list.txt) with list of Instagram users name")
 	rootCmd.PersistentFlags().StringSliceP("tags", "t", []string{""}, "Tags")
-	rootCmd.PersistentFlags().StringSliceP("webhook", "w", []string{""}, "Webhook")
+	rootCmd.PersistentFlags().StringSliceP("webhooks", "w", []string{""}, "Webhooks")
 	viper.BindPFlag("users", rootCmd.PersistentFlags().Lookup("users"))
 	viper.BindPFlag("lists", rootCmd.PersistentFlags().Lookup("lists"))
 	viper.BindPFlag("tags", rootCmd.PersistentFlags().Lookup("tags"))
-	viper.BindPFlag("webhook", rootCmd.PersistentFlags().Lookup("webhook"))
+	viper.BindPFlag("webhooks", rootCmd.PersistentFlags().Lookup("webhooks"))
 }
 
 func Execute() error {
