@@ -22,7 +22,7 @@ const (
 
 var (
 	DATA_DIR = "data"
-	wg       sync.WaitGroup
+	WG       sync.WaitGroup
 	count    int64 = 0
 )
 
@@ -36,9 +36,9 @@ func hook(n models.PurpleNode) {
 	img := n.DisplayURL
 	log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode) //, img)
 	go func() {
-		wg.Add(1)
+		WG.Add(1)
 		getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
-		wg.Done()
+		WG.Done()
 	}()
 
 	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)

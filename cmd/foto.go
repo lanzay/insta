@@ -31,4 +31,5 @@ func fotoRun(cmd *cobra.Command, args []string) {
 	for _, tag := range tags {
 		insta.GetPostsByTag(tag)
 	}
+	insta.WG.Wait()
 }
