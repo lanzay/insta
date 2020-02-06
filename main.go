@@ -111,7 +111,7 @@ func getQueryHash(body []byte, targetType TargetType) string {
 	return QueryHash
 }
 
-func GetNextScroll(query_hash, p1, v1 string, count int, after string) *models.InstaNext {
+func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) *models.InstaNext {
 
 	variables := fmt.Sprintf("{\"%s\":\"%s\",\"first\":%d,\"after\":\"%s\"}", p1, v1, count, after)
 	u := fmt.Sprintf(`https://www.instagram.com/graphql/query/?query_hash=%s&variables=%s`, query_hash, variables)
@@ -132,12 +132,17 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string) *models.I
 		log.Println(u)
 		log.Println("[I] Rate limit 5000 pet hour. Wait 5 min...")
 		time.Sleep(5 * time.Minute)
-		GetNextScroll(query_hash, p1, v1, count, after)
+		try++
+		GetNextScroll(query_hash, p1, v1, count, after, try)
 		return nil
 	}
 	if res.StatusCode != 200 {
 		log.Println(u)
-		log.Println("[E] E001", res.StatusCode, err, string(body))
+		log.Println("[E] E005", res.StatusCode, err, string(body))
+		if try <= 3 {
+			time.Sleep(5 * time.Minute)
+			GetNextScroll(query_hash, p1, v1, count, after, try)
+		}
 		return nil
 	}
 
