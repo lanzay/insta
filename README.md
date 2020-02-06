@@ -8,8 +8,11 @@ Scrap by:
 * List of users names
 * Tag
 
+Output:
+* webhook
+
 ```
-insta -u nasa,kyliejenner -f list.txt -t topmodel foto
+insta -u nasa,kyliejenner -l list.txt -t topmodel -w https://myserver.ru/json foto
 ```
 
 PS

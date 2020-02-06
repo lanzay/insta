@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/spf13/viper"
 	"github.com/valyala/fasthttp"
 	"insta/models"
 	"log"
+	"net/http"
 	"os"
 	"time"
 )
@@ -21,6 +23,26 @@ var (
 
 func init() {
 	os.MkdirAll(DATA_DIR, 0666)
+}
+
+func hook(n models.PurpleNode) {
+
+	img := n.DisplayURL
+	log.Println(n.Owner.Username, n.Owner.ID, n.ID, img)
+	getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
+
+	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)
+	defer f.Close()
+	body, _ := json.Marshal(n)
+	f.Write(body)
+	f.Write([]byte("\n"))
+	//log.Println(string(body))
+
+	if webHooks := viper.GetStringSlice("users"); len(webHooks) != 0 {
+		for _, webHook := range webHooks {
+			http.Post(webHook, "application/json", bytes.NewReader(body))
+		}
+	}
 }
 
 func getJSONFromBody(body []byte) []byte {

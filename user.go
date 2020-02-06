@@ -7,40 +7,7 @@ import (
 	"insta/models"
 	"io/ioutil"
 	"log"
-	"os"
 )
-
-func hook(n models.PurpleNode) {
-
-	img := n.DisplayURL
-	log.Println(n.Owner.Username, n.Owner.ID, n.ID, img)
-	getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
-
-	//res := fmt.Sprintf("%s\t%s\t%s\t%d\t%d\t%d\t%s\t%s\t%v\t%s\t%s",
-	//	n.Typename, // GraphVideo
-	//	n.ID,
-	//	"https://www.instagram.com/p/"+n.Shortcode+"/", // B8Ed2ghhMco // https://www.instagram.com/p/B8Ed2ghhMco/
-	//	n.EdgeMediaToComment.Count,                     // 10
-	//	n.TakenAtTimestamp,                             // 1580657992
-	//	n.EdgeLikedBy.Count, // 120
-	//	//n.EdgeMediaPreviewLike.Count,                   // 0
-	//	n.Owner.ID, // 7062024874
-	//	n.Owner.Username,                               //
-	//	n.IsVideo, // false
-	//	//n.Location,                                     //
-	//	//n.GatingInfo,                                   //
-	//	n.AccessibilityCaption, // Image may contain: 1 person
-	//	n.EdgeMediaToCaption.Edges[0].Node.Text, // She’s teaching daddy a thing or two Snowboard session at Absolut Park in Austria! 🏂 		#rodeoand5th #travel 📹 by: @grilo
-	//)
-
-	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)
-	defer f.Close()
-	body, _ := json.Marshal(n)
-	f.Write(body)
-	f.Write([]byte("\n"))
-	log.Println(string(body))
-
-}
 
 func GetPostsByUserList(list string) {
 
@@ -94,25 +61,6 @@ func getUserPageByScroll(queryHash string, o models.User, count, total int) {
 		for _, v := range src.Edges {
 			n := v.Node
 			hook(n)
-			//log.Println("[D] Node info:",
-			//	n.Typename, // GraphVideo
-			//	//n.EdgeMediaToCaption.Edges[0].Node.Text, // She’s teaching daddy a thing or two Snowboard session at Absolut Park in Austria! 🏂 		#rodeoand5th #travel 📹 by: @grilo
-			//	"https://www.instagram.com/p/"+n.Shortcode+"/", // B8Ed2ghhMco // https://www.instagram.com/p/B8Ed2ghhMco/
-			//	n.EdgeMediaToComment.Count,                     // 10
-			//	//n.TakenAtTimestamp,                             // 1580657992
-			//	n.EdgeLikedBy.Count, // 120
-			//	//n.EdgeMediaPreviewLike.Count,                   // 0
-			//	n.Owner.ID, // 7062024874
-			//	//n.Owner.Username,                               //
-			//	n.IsVideo, // false
-			//	//n.Location,                                     //
-			//	//n.GatingInfo,                                   //
-			//	n.AccessibilityCaption, // Image may contain: 1 person
-			//)
-
-			//img := n.DisplayURL
-			//log.Println(n.Owner.Username, n.Owner.ID, n.ID, img)
-			//getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
 		}
 	}
 
