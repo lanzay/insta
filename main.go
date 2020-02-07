@@ -53,8 +53,9 @@ func hook(n models.PurpleNode) {
 	f.Close()
 	//log.Println(string(body))
 
-	for try := 1; ; try++ {
-		if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
+	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
+	m1:
+		for try := 1; ; try++ {
 			for _, webHook := range webHooks {
 				res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
 				res.Body.Close()
@@ -62,11 +63,12 @@ func hook(n models.PurpleNode) {
 					log.Println("[E] POST hook ERR", try, err)
 					runtime.Gosched()
 					time.Sleep(500 * time.Millisecond)
-					continue
+					continue m1
 				}
 				if err == nil && res.StatusCode != 200 {
 					log.Println("[E] POST hook !200", res.StatusCode, err, string(body))
 				}
+				break m1
 			}
 		}
 	}
@@ -180,7 +182,6 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 }
 
 func getIMG(userName, userID, imgID, url string) {
-
 	folder := userName
 	if len(folder) == 0 {
 		folder = "__by_id"
