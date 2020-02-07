@@ -48,19 +48,22 @@ func hook(n models.PurpleNode) {
 	f.Close()
 	//log.Println(string(body))
 
-	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
-		for _, webHook := range webHooks {
-			res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
-			res.Body.Close()
-			if err != nil {
-				log.Println("[E] POST hook ERR", err)
-			}
-			if err == nil && res.StatusCode != 200 {
-				log.Println("[E] POST hook !200", res.StatusCode, err, string(body))
+	for try := 1; ; try++ {
+		if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
+			for _, webHook := range webHooks {
+				res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
+				res.Body.Close()
+				if err != nil {
+					log.Println("[E] POST hook ERR", try, err)
+					continue
+				}
+				if err == nil && res.StatusCode != 200 {
+					log.Println("[E] POST hook !200", res.StatusCode, err, string(body))
+				}
 			}
 		}
 	}
-	if count%500 == 0 {
+	if count == 1 || count%500 == 0 {
 		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
 	}
 }
