@@ -51,6 +51,7 @@ func hook(n models.PurpleNode) {
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 		for _, webHook := range webHooks {
 			res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
+			res.Body.Close()
 			if err != nil {
 				log.Println("[E] POST hook ERR", err)
 			}
