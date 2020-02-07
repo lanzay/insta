@@ -45,13 +45,14 @@ func hook(n models.PurpleNode) {
 	body, _ := json.Marshal(n)
 	f.Write(body)
 	f.Write([]byte("\n"))
+	f.Close()
 	//log.Println(string(body))
 
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 		for _, webHook := range webHooks {
 			res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
 			if err != nil {
-				log.Println("[E] POST hook err", err, string(body))
+				log.Println("[E] POST hook ERR", err)
 			}
 			if err == nil && res.StatusCode != 200 {
 				log.Println("[E] POST hook !200", res.StatusCode, err, string(body))

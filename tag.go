@@ -29,11 +29,12 @@ func getFirstTagPage(tag string) (string, *models.Insta) {
 	if err != nil || res.StatusCode != 200 {
 		log.Panicln("[E] GET tag", res.StatusCode, u, err)
 	}
+	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Panicln("[E] GET.Read tag", res.StatusCode, u, err)
 	}
-	defer res.Body.Close()
+	res.Body.Close()
 	queryHash := getQueryHash(body, Tag)
 
 	jsonBody := getJSONFromBody(body)
