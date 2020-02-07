@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -33,6 +34,10 @@ func init() {
 func hook(n models.PurpleNode) {
 
 	count = atomic.AddInt64(&count, 1)
+	if count == 1 || count%500 == 0 {
+		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
+	}
+
 	img := n.DisplayURL
 	go func() {
 		WG.Add(1)
@@ -55,6 +60,8 @@ func hook(n models.PurpleNode) {
 				res.Body.Close()
 				if err != nil {
 					log.Println("[E] POST hook ERR", try, err)
+					runtime.Gosched()
+					time.Sleep(500 * time.Millisecond)
 					continue
 				}
 				if err == nil && res.StatusCode != 200 {
@@ -62,9 +69,6 @@ func hook(n models.PurpleNode) {
 				}
 			}
 		}
-	}
-	if count == 1 || count%500 == 0 {
-		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
 	}
 }
 
