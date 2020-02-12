@@ -79,7 +79,8 @@ func getUserPageByScroll(queryHash string, o models.User, count, total int) {
 	//NextScroll
 	if src.PageInfo.HasNextPage && (total == -1 || (count+12) < total) {
 		count += 50
-		next := GetNextScroll(queryHash, "id", src.Edges[0].Node.Owner.ID, count, *src.PageInfo.EndCursor, 1)
+		next := GetNextScroll(queryHash, "id", src.Edges[0].Node.Owner.ID, 50, *src.PageInfo.EndCursor, 1)
+		//next := GetNextScroll(queryHash, "id", src.Edges[0].Node.Owner.ID, count, *src.PageInfo.EndCursor, 1)
 		if next == nil {
 			log.Println("[E] E007", queryHash, "id", src.Edges[0].Node.Owner.ID, count, total, *src.PageInfo.EndCursor)
 			return
