@@ -41,7 +41,7 @@ func hook(n models.PurpleNode) {
 	img := n.DisplayURL
 	go func() {
 		WG.Add(1)
-		getIMG(n.Owner.Username, n.Owner.ID, n.ID, img)
+		getIMGMust(n.Owner.Username, n.Owner.ID, n.ID, img)
 		WG.Done()
 	}()
 
@@ -55,8 +55,9 @@ func hook(n models.PurpleNode) {
 
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 	m1:
-		for try := 1; ; try++ {
-			for _, webHook := range webHooks {
+
+		for _, webHook := range webHooks {
+			for try := 1; ; try++ {
 				res, err := http.Post(webHook, "application/json", bytes.NewReader(body))
 				res.Body.Close()
 				if err != nil {
@@ -180,8 +181,17 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 	}
 	return &insta
 }
+func getIMGMust(userName, userID, imgID, url string) {
 
-func getIMG(userName, userID, imgID, url string) {
+	for try := 0; try <= 3; try++ {
+		if err := getIMG(userName, userID, imgID, url); err == nil {
+			break
+		}
+	}
+}
+
+func getIMG(userName, userID, imgID, url string) error {
+
 	folder := userName
 	if len(folder) == 0 {
 		folder = "__by_id"
@@ -190,12 +200,13 @@ func getIMG(userName, userID, imgID, url string) {
 
 	res, err := http.Get(url)
 	if err != nil || res.StatusCode != 200 {
-		log.Panicln("[E] E004", res.StatusCode, err)
+		log.Println("[E] E004", res.StatusCode, err)
+		return err
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Println("[E] GET.Read.IMG", res.StatusCode, url, err)
-		return
+		return err
 	}
 	defer res.Body.Close()
 
@@ -203,4 +214,5 @@ func getIMG(userName, userID, imgID, url string) {
 	defer f.Close()
 	f.Write(body)
 	f.Close()
+	return nil
 }
