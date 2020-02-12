@@ -33,7 +33,7 @@ func GetPostsByUser(user string) {
 
 	queryHash, insta := getFirstUserPage(user)
 
-	if insta == nil || len(insta.EntryData.TagPage) == 0 || len(queryHash) == 0 {
+	if insta == nil || len(insta.EntryData.ProfilePage) == 0 || len(queryHash) == 0 {
 		return
 	}
 
