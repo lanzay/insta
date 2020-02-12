@@ -157,12 +157,12 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 		return nil
 	}
 	if res.StatusCode != 200 {
-		log.Println(u)
 		log.Println("[E] E005", res.StatusCode, err, string(body))
+		log.Println("[E] url:", u)
 		if try <= 3 {
+			log.Println("[D]", query_hash, p1, v1, count, after, try)
 			log.Println("[D] wait 2 mimutes...")
 			time.Sleep(2 * time.Minute)
-			log.Println("[I]", query_hash, p1, v1, count, after, try)
 			GetNextScroll(query_hash, p1, v1, count, after, try)
 		}
 		return nil
