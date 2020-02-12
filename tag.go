@@ -58,7 +58,7 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 	//NextScroll
 	if src.PageInfo.HasNextPage && (total == -1 || (count+70) < total) {
 		count += 50
-		next := GetNextScroll(queryHash, "tag_name", hashTag.Name, count, *src.PageInfo.EndCursor, 1)
+		next := GetNextScroll(queryHash, "tag_name", hashTag.Name, 50, *src.PageInfo.EndCursor, 1)
 		if next == nil {
 			log.Println("[E] E006", queryHash, "tag_name", hashTag.Name, count, total, *src.PageInfo.EndCursor)
 			return

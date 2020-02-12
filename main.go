@@ -153,7 +153,7 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 		log.Println("[I] Rate limit 5000 pet hour. Wait 5 min...")
 		time.Sleep(5 * time.Minute)
 		try++
-		GetNextScroll(query_hash, p1, v1, count, after, try)
+		return GetNextScroll(query_hash, p1, v1, count, after, try)
 		return nil
 	}
 	if res.StatusCode != 200 {
@@ -164,7 +164,7 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 		if try <= 3 {
 			log.Println("[D] wait 2 mimutes...")
 			time.Sleep(2 * time.Minute)
-			GetNextScroll(query_hash, p1, v1, count, after, try)
+			return GetNextScroll(query_hash, p1, v1, count, after, try)
 		}
 		return nil
 	}
