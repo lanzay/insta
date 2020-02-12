@@ -24,6 +24,7 @@ func GetPostsByUserList(list string) {
 	for _, v := range lines {
 		v = bytes.Trim(v, "@")
 		v = bytes.TrimSpace(v)
+		log.Println("[I] Start from list ByUser", string(v))
 		GetPostsByUser(string(v))
 	}
 }
