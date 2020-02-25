@@ -10,7 +10,6 @@ var rootCmd = &cobra.Command{
 	Version: "1.0.0",
 	Short:   "Instagram tools",
 	Long:    `Instagram tools`,
-	//Run:   run,
 }
 
 func init() {
@@ -24,13 +23,9 @@ func init() {
 	viper.BindPFlag("webhooks", rootCmd.PersistentFlags().Lookup("webhooks"))
 }
 
-func Execute() error {
-	rootCmd.Help()
-	return rootCmd.Execute()
-}
-
 func main() {
 	rootCmd.AddCommand(fotoCmd)
-	rootCmd.AddCommand(userCmd)
-	Execute()
+
+	rootCmd.Help()
+	rootCmd.Execute()
 }

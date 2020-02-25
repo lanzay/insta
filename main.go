@@ -150,8 +150,8 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 
 	if res.StatusCode == 429 {
 		log.Println(u)
-		log.Println("[I] Rate limit 5000 pet hour. Wait 5 min...")
-		time.Sleep(5 * time.Minute)
+		log.Println("[I] Rate limit 5000 pet hour. Wait 1 min...")
+		time.Sleep(1 * time.Minute)
 		try++
 		return GetNextScroll(query_hash, p1, v1, count, after, try)
 		return nil
