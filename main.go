@@ -28,7 +28,7 @@ var (
 )
 
 func init() {
-	os.MkdirAll(DATA_DIR, 0666)
+	os.MkdirAll(DATA_DIR, 0777)
 }
 
 func hook(n models.PurpleNode) {
@@ -45,7 +45,7 @@ func hook(n models.PurpleNode) {
 		WG.Done()
 	}()
 
-	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)
+	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0777)
 	defer f.Close()
 	body, _ := json.Marshal(n)
 	f.Write(body)
@@ -199,7 +199,7 @@ func getIMG(userName, userID, imgID, url string) error {
 	if len(folder) == 0 {
 		folder = "__by_id"
 	}
-	os.MkdirAll(DATA_DIR+"/"+folder, 0666)
+	os.MkdirAll(DATA_DIR+"/"+folder, 0777)
 
 	res, err := http.Get(url)
 	if err != nil || res.StatusCode != 200 {

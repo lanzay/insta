@@ -19,7 +19,7 @@ func GetPostsByTag(tag string) {
 
 	gql := insta.EntryData.TagPage[0].Graphql
 	src := gql.Hashtag
-	getTagPageByScroll(queryHash, src, 0, 7000)
+	getTagPageByScroll(queryHash, src, 0, -1)
 }
 
 func getFirstTagPage(tag string) (string, *models.Insta) {
