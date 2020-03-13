@@ -39,7 +39,7 @@ func GetPostsByUser(user string) {
 
 	gql := insta.EntryData.ProfilePage[0].Graphql
 	src := gql.User
-	getUserPageByScroll(queryHash, src, 0, 7000)
+	getUserPageByScroll(queryHash, src, 0, -1)
 }
 
 func getFirstUserPage(user string) (string, *models.Insta) {
@@ -69,6 +69,9 @@ func getFirstUserPage(user string) (string, *models.Insta) {
 
 func getUserPageByScroll(queryHash string, o models.User, count, total int) {
 
+	if o.IsBusinessAccount {
+		return
+	}
 	src := o.EdgeOwnerToTimelineMedia
 	{ // doing something
 		for _, v := range src.Edges {

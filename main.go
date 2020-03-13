@@ -38,24 +38,25 @@ func hook(n models.PurpleNode) {
 		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
 	}
 
-	img := n.DisplayURL
-	go func() {
-		WG.Add(1)
-		getIMGMust(n.Owner.Username, n.Owner.ID, n.ID, img)
-		WG.Done()
-	}()
+	// TODO 2020-03-13 Anton
+	//img := n.DisplayURL
+	//go func() {
+	//	WG.Add(1)
+	//	getIMGMust(n.Owner.Username, n.Owner.ID, n.ID, img)
+	//	WG.Done()
+	//}()
 
-	f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0777)
-	defer f.Close()
 	body, _ := json.Marshal(n)
-	f.Write(body)
-	f.Write([]byte("\n"))
-	f.Close()
-	//log.Println(string(body))
+
+	//f, _ := os.OpenFile("insta_detail.json", os.O_APPEND|os.O_CREATE, 0666)
+	//defer f.Close()
+	//f.Write(body)
+	//f.Write([]byte("\n"))
+	//f.Close()
+	////log.Println(string(body))
 
 	if webHooks := viper.GetStringSlice("webhooks"); len(webHooks) != 0 {
 	m1:
-
 		for _, webHook := range webHooks {
 			for try := 1; ; try++ {
 				res, err := http.Post(webHook, "application/json", bytes.NewReader(body))

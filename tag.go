@@ -64,6 +64,5 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 			return
 		}
 		getTagPageByScroll(queryHash, next.Data.Hashtag, count, total)
-
 	}
 }

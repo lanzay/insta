@@ -24,3 +24,11 @@ tag:
 
 PS
 Собранные бинарники тут https://github.com/lanzay/insta/releases/
+
+```
+https://www.instagram.com/explore/locations/359545221/moscow/
+https://www.instagram.com/explore/locations/17326249/moscow-russia/
+https://www.instagram.com/explore/locations/1206739199510403/
+https://www.instagram.com/explore/locations/327275377680277/
+https://www.instagram.com/explore/locations/1/
+```
