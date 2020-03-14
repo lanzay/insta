@@ -1,28 +1,54 @@
 package models
 
 type Insta struct {
-	Config             Config       `json:"config"`
-	CountryCode        string       `json:"country_code"`
-	LanguageCode       string       `json:"language_code"`
-	Locale             string       `json:"locale"`
-	EntryData          EntryData    `json:"entry_data"`
-	Hostname           string       `json:"hostname"`
-	DeploymentStage    string       `json:"deployment_stage"`
-	Platform           string       `json:"platform"`
-	Nonce              string       `json:"nonce"`
-	MidPct             float64      `json:"mid_pct"`
-	ZeroData           ServerChecks `json:"zero_data"`
-	CacheSchemaVersion int64        `json:"cache_schema_version"`
-	ServerChecks       ServerChecks `json:"server_checks"`
-	Knobx              *interface{} `json:"knobx"`
-	ToCache            ToCache      `json:"to_cache"`
-	DeviceID           string       `json:"device_id"`
-	Encryption         Encryption   `json:"encryption"`
-	RolloutHash        string       `json:"rollout_hash"`
-	BundleVariant      string       `json:"bundle_variant"`
-	IsCanary           bool         `json:"is_canary"`
+	Config                Config       `json:"config"`
+	CountryCode           string       `json:"country_code"`
+	LanguageCode          string       `json:"language_code"`
+	Locale                string       `json:"locale"`
+	EntryData             EntryData    `json:"entry_data"`
+	Hostname              string       `json:"hostname"`
+	IsWhitelistedCrawlBot bool         `json:"is_whitelisted_crawl_bot"` // (!)
+	DeploymentStage       string       `json:"deployment_stage"`
+	Platform              string       `json:"platform"`
+	Nonce                 string       `json:"nonce"`
+	MidPct                float64      `json:"mid_pct"`
+	ZeroData              *interface{} `json:"zero_data"`
+	CacheSchemaVersion    int64        `json:"cache_schema_version"`
+	ServerChecks          *interface{} `json:"server_checks"`
+	Knobx                 *interface{} `json:"knobx"`
+	ToCache               ToCache      `json:"to_cache"`
+	DeviceID              string       `json:"device_id"` // (!)
+	Encryption            Encryption   `json:"encryption"`
+	RolloutHash           string       `json:"rollout_hash"`
+	BundleVariant         string       `json:"bundle_variant"`
+	IsCanary              bool         `json:"is_canary"`
 }
 
+type EntryData struct {
+	ProfilePage []ProfilePage `json:"ProfilePage"`
+	TagPage     []GraphqlPage `json:"TagPage"`
+	PostPage    []GraphqlPage `json:"PostPage"`
+}
+
+type GraphqlPage struct {
+	Graphql Graphql `json:"graphql"`
+}
+
+type Graphql struct {
+	User           User           `json:"user"`
+	Hashtag        Hashtag        `json:"hashtag"`
+	ShortcodeMedia ShortcodeMedia `json:"shortcode_media"`
+}
+
+type ProfilePage struct {
+	LoggingPageID         string      `json:"logging_page_id"`
+	ShowSuggestedProfiles bool        `json:"show_suggested_profiles"`
+	ShowFollowDialog      bool        `json:"show_follow_dialog"`
+	Graphql               Graphql     `json:"graphql"`
+	ToastContentOnLoad    interface{} `json:"toast_content_on_load"`
+}
+
+// ===================
 type InstaNext struct {
 	Data   Data   `json:"data"`
 	Status string `json:"status"`
@@ -40,26 +66,6 @@ type Config struct {
 type Encryption struct {
 	KeyID     string `json:"key_id"`
 	PublicKey string `json:"public_key"`
-}
-
-type EntryData struct {
-	ProfilePage []ProfilePage `json:"ProfilePage"`
-	TagPage     []TagPage     `json:"TagPage"`
-}
-type TagPage struct {
-	Graphql Graphql `json:"graphql"`
-}
-type ProfilePage struct {
-	LoggingPageID         string      `json:"logging_page_id"`
-	ShowSuggestedProfiles bool        `json:"show_suggested_profiles"`
-	ShowFollowDialog      bool        `json:"show_follow_dialog"`
-	Graphql               Graphql     `json:"graphql"`
-	ToastContentOnLoad    interface{} `json:"toast_content_on_load"`
-}
-
-type Graphql struct {
-	User    User    `json:"user"`
-	Hashtag Hashtag `json:"hashtag"`
 }
 
 type User struct {
@@ -109,6 +115,54 @@ type Hashtag struct {
 	EdgeHashtagToNullState       EdgeHashtagToNullStateClass  `json:"edge_hashtag_to_null_state"`
 }
 
+type ShortcodeMedia struct {
+	Typename                    string                        `json:"__typename"`
+	ID                          string                        `json:"id"`
+	Shortcode                   string                        `json:"shortcode"`
+	Dimensions                  Dimensions                    `json:"dimensions"`
+	GatingInfo                  interface{}                   `json:"gating_info"`
+	FactCheckOverallRating      interface{}                   `json:"fact_check_overall_rating"`
+	FactCheckInformation        interface{}                   `json:"fact_check_information"`
+	MediaPreview                interface{}                   `json:"media_preview"`
+	DisplayURL                  string                        `json:"display_url"`
+	DisplayResources            []DisplayResource             `json:"display_resources"`
+	IsVideo                     bool                          `json:"is_video"`
+	TrackingToken               string                        `json:"tracking_token"`
+	EdgeMediaToTaggedUser       EdgeMediaToTaggedUser         `json:"edge_media_to_tagged_user"`
+	EdgeMediaToCaption          EdgeMediaToCaptionClass       `json:"edge_media_to_caption"`
+	CaptionIsEdited             bool                          `json:"caption_is_edited"`
+	HasRankedComments           bool                          `json:"has_ranked_comments"`
+	EdgeMediaToParentComment    EdgeMediaToParentCommentClass `json:"edge_media_to_parent_comment"`
+	EdgeMediaToHoistedComment   EdgeMediaToCaptionClass       `json:"edge_media_to_hoisted_comment"`
+	EdgeMediaPreviewComment     EdgeMediaPreview              `json:"edge_media_preview_comment"`
+	CommentsDisabled            bool                          `json:"comments_disabled"`
+	CommentingDisabledForViewer bool                          `json:"commenting_disabled_for_viewer"`
+	TakenAtTimestamp            int64                         `json:"taken_at_timestamp"`
+	EdgeMediaPreviewLike        EdgeMediaPreview              `json:"edge_media_preview_like"`
+	EdgeMediaToSponsorUser      EdgeMediaToCaptionClass       `json:"edge_media_to_sponsor_user"`
+	Location                    *Location                     `json:"location"`
+	ViewerHasLiked              bool                          `json:"viewer_has_liked"`
+	ViewerHasSaved              bool                          `json:"viewer_has_saved"`
+	ViewerHasSavedToCollection  bool                          `json:"viewer_has_saved_to_collection"`
+	ViewerInPhotoOfYou          bool                          `json:"viewer_in_photo_of_you"`
+	ViewerCanReshare            bool                          `json:"viewer_can_reshare"`
+	Owner                       ShortcodeMediaOwner           `json:"owner"`
+	IsAd                        bool                          `json:"is_ad"`
+	EdgeWebMediaToRelatedMedia  EdgeMediaToCaptionClass       `json:"edge_web_media_to_related_media"`
+	EdgeSidecarToChildren       EdgeSidecarToChildren         `json:"edge_sidecar_to_children"`
+}
+
+type DisplayResource struct {
+	Src          string `json:"src"`
+	ConfigWidth  int64  `json:"config_width"`
+	ConfigHeight int64  `json:"config_height"`
+}
+
+type EdgeMediaPreview struct {
+	Count int64                         `json:"count"`
+	Edges []EdgeMediaPreviewCommentEdge `json:"edges"`
+}
+
 type EdgeHashtagToContentAdvisory struct {
 	Count int64         `json:"count"`
 	Edges []interface{} `json:"edges"`
@@ -155,27 +209,33 @@ type EdgeFelixVideoTimelineEdge struct {
 }
 
 type PurpleNode struct {
-	Typename               string              `json:"__typename"`
-	ID                     string              `json:"id"`
-	EdgeMediaToCaption     EdgeMediaToCaption  `json:"edge_media_to_caption"`
-	Shortcode              string              `json:"shortcode"`
-	EdgeMediaToComment     EdgeFollowClass     `json:"edge_media_to_comment"`
-	CommentsDisabled       bool                `json:"comments_disabled"`
-	TakenAtTimestamp       int64               `json:"taken_at_timestamp"`
-	Dimensions             Dimensions          `json:"dimensions"`
-	DisplayURL             string              `json:"display_url"`
-	EdgeLikedBy            EdgeFollowClass     `json:"edge_liked_by"`
-	EdgeMediaPreviewLike   EdgeFollowClass     `json:"edge_media_preview_like"`
-	Location               *Location           `json:"location"`
-	GatingInfo             interface{}         `json:"gating_info"`
-	FactCheckOverallRating interface{}         `json:"fact_check_overall_rating"`
-	FactCheckInformation   interface{}         `json:"fact_check_information"`
-	MediaPreview           string              `json:"media_preview"`
-	Owner                  Owner               `json:"owner"`
-	ThumbnailSrc           string              `json:"thumbnail_src"`
-	ThumbnailResources     []ThumbnailResource `json:"thumbnail_resources"`
-	IsVideo                bool                `json:"is_video"`
-	AccessibilityCaption   string              `json:"accessibility_caption"`
+	Typename               string                         `json:"__typename"`
+	ID                     string                         `json:"id"`
+	EdgeMediaToCaption     EdgeMediaToCaption             `json:"edge_media_to_caption"`
+	Shortcode              string                         `json:"shortcode"`
+	EdgeMediaToComment     EdgeFollowClass                `json:"edge_media_to_comment"`
+	CommentsDisabled       bool                           `json:"comments_disabled"`
+	TakenAtTimestamp       int64                          `json:"taken_at_timestamp"`
+	Dimensions             Dimensions                     `json:"dimensions"`
+	DisplayURL             string                         `json:"display_url"`
+	EdgeLikedBy            EdgeFollowClass                `json:"edge_liked_by"`
+	EdgeMediaPreviewLike   EdgeFollowClass                `json:"edge_media_preview_like"`
+	Location               *Location                      `json:"location"`
+	GatingInfo             interface{}                    `json:"gating_info"`
+	FactCheckOverallRating interface{}                    `json:"fact_check_overall_rating"`
+	FactCheckInformation   interface{}                    `json:"fact_check_information"`
+	MediaPreview           string                         `json:"media_preview"`
+	Owner                  Owner                          `json:"owner"`
+	ThumbnailSrc           string                         `json:"thumbnail_src"`
+	ThumbnailResources     []ThumbnailResource            `json:"thumbnail_resources"`
+	IsVideo                bool                           `json:"is_video"`
+	AccessibilityCaption   string                         `json:"accessibility_caption"`
+	Text                   string                         `json:"text"`
+	CreatedAt              int64                          `json:"created_at"`
+	DidReportAsSpam        bool                           `json:"did_report_as_spam"`
+	ViewerHasLiked         bool                           `json:"viewer_has_liked"`
+	IsRestrictedPending    bool                           `json:"is_restricted_pending"`
+	EdgeThreadedComments   *EdgeMediaToParentCommentClass `json:"edge_threaded_comments,omitempty"`
 }
 
 type Dimensions struct {
@@ -227,12 +287,84 @@ type EdgeMutualFollowedBy struct {
 	Edges []interface{} `json:"edges"`
 }
 
-type ServerChecks struct {
-}
-
 type ToCache struct {
 	Gatekeepers    map[string]bool `json:"gatekeepers"`
 	Qe             *interface{}    `json:"qe"`
 	ProbablyHasApp bool            `json:"probably_has_app"`
 	Cb             bool            `json:"cb"`
+}
+
+type EdgeMediaToParentCommentClass struct {
+	Count    int64                         `json:"count"`
+	PageInfo PageInfo                      `json:"page_info"`
+	Edges    []EdgeMediaPreviewCommentEdge `json:"edges"`
+}
+
+type EdgeMediaPreviewCommentEdge struct {
+	Node PurpleNode `json:"node"`
+}
+
+type EdgeOwnerToTimelineMediaClass struct {
+	Count int64 `json:"count"`
+}
+
+type UserClass struct {
+	ID            string  `json:"id"`
+	IsVerified    bool    `json:"is_verified"`
+	ProfilePicURL string  `json:"profile_pic_url"`
+	Username      string  `json:"username"`
+	FullName      *string `json:"full_name,omitempty"`
+}
+
+type EdgeMediaToCaptionClass struct {
+	Edges []EdgeMediaToCaptionEdge `json:"edges"`
+}
+
+type EdgeMediaToTaggedUser struct {
+	Edges []EdgeMediaToTaggedUserEdge `json:"edges"`
+}
+
+type EdgeMediaToTaggedUserEdge struct {
+	Node TentacledNode `json:"node"`
+}
+
+type EdgeSidecarToChildren struct {
+	Edges []EdgeSidecarToChildrenEdge `json:"edges"`
+}
+
+type EdgeSidecarToChildrenEdge struct {
+	Node StickyNode `json:"node"`
+}
+
+type StickyNode struct {
+	Typename               string                `json:"__typename"`
+	ID                     string                `json:"id"`
+	Shortcode              string                `json:"shortcode"`
+	Dimensions             Dimensions            `json:"dimensions"`
+	GatingInfo             interface{}           `json:"gating_info"`
+	FactCheckOverallRating interface{}           `json:"fact_check_overall_rating"`
+	FactCheckInformation   interface{}           `json:"fact_check_information"`
+	MediaPreview           string                `json:"media_preview"`
+	DisplayURL             string                `json:"display_url"`
+	DisplayResources       []DisplayResource     `json:"display_resources"`
+	AccessibilityCaption   string                `json:"accessibility_caption"`
+	IsVideo                bool                  `json:"is_video"`
+	TrackingToken          string                `json:"tracking_token"`
+	EdgeMediaToTaggedUser  EdgeMediaToTaggedUser `json:"edge_media_to_tagged_user"`
+}
+
+type ShortcodeMediaOwner struct {
+	ID                       string                        `json:"id"`
+	IsVerified               bool                          `json:"is_verified"`
+	ProfilePicURL            string                        `json:"profile_pic_url"`
+	Username                 string                        `json:"username"`
+	BlockedByViewer          bool                          `json:"blocked_by_viewer"`
+	RestrictedByViewer       bool                          `json:"restricted_by_viewer"`
+	FollowedByViewer         bool                          `json:"followed_by_viewer"`
+	FullName                 string                        `json:"full_name"`
+	HasBlockedViewer         bool                          `json:"has_blocked_viewer"`
+	IsPrivate                bool                          `json:"is_private"`
+	IsUnpublished            bool                          `json:"is_unpublished"`
+	RequestedByViewer        bool                          `json:"requested_by_viewer"`
+	EdgeOwnerToTimelineMedia EdgeOwnerToTimelineMediaClass `json:"edge_owner_to_timeline_media"`
 }

@@ -35,7 +35,7 @@ func hook(n models.PurpleNode) {
 
 	count = atomic.AddInt64(&count, 1)
 	if count == 1 || count%500 == 0 {
-		log.Printf("[I] %d) https://instagramm/%s UserID:%s IMG:%s https://instagramm/p/%s\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
+		log.Printf("[I] %d) https://www.instagram.com/%s/ UserID:%s IMG:%s https://www.instagram.com/p/%s/\n", count, n.Owner.Username, n.Owner.ID, n.ID, n.Shortcode)
 	}
 
 	// TODO 2020-03-13 Anton
@@ -76,9 +76,39 @@ func hook(n models.PurpleNode) {
 	}
 }
 
+func hookGetMedia(n models.PurpleNode) *models.ShortcodeMedia {
+
+	mm := GetShortCodeMedia(n.Shortcode)
+	if mm.EntryData.PostPage != nil && len(mm.EntryData.PostPage) > 0 {
+		return &mm.EntryData.PostPage[0].Graphql.ShortcodeMedia
+		//userID := mm.EntryData.PostPage[0].Graphql.ShortcodeMedia.Owner.ID
+		//userName := mm.EntryData.PostPage[0].Graphql.ShortcodeMedia.Owner.Username
+		//log.Println("[I] User: ", userID, userName)
+		//GetPostsByUser(userName)
+	}
+	return nil
+}
+
 func getJSONFromBody(body []byte) []byte {
+
 	s := bytes.Index(body, []byte("window._sharedData = ")) + len("window._sharedData = ")
 	e := bytes.Index(body[s:], []byte(";</script>"))
+	return body[s : s+e]
+}
+
+//depricated
+func getJSONFromBodyAdditionalDataLoaded(body []byte) []byte {
+
+	start := `window.__additionalDataLoaded('/p/`
+	end := ");</script>"
+	// window.__additionalDataLoaded('/p/B9sQjP9BZRZ/',{"graphql":
+
+	s := bytes.Index(body, []byte(start)) + len(start)
+	if s > 0 {
+		ss := bytes.Index(body[s:], []byte("/',")) + len("/',")
+		s += ss
+	}
+	e := bytes.Index(body[s:], []byte(end))
 	return body[s : s+e]
 }
 
@@ -152,7 +182,7 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 
 	if res.StatusCode == 429 {
 		if bytes.Contains(body, []byte(`{"message": "rate limited", "status": "fail"}`)) {
-			log.Println("[I] Rate limit 5000 pet hour. Wait 1 min...")
+			log.Println("[I] Rate limit. Wait 1 min to retry request...")
 			time.Sleep(1 * time.Minute)
 			return GetNextScroll(query_hash, p1, v1, count, after, try)
 			return nil

@@ -52,9 +52,22 @@ func getTagPageByScroll(queryHash string, hashTag models.Hashtag, count, total i
 	{ // doing something
 		for _, v := range src.Edges {
 			n := v.Node
+
+			// Add info: UserName + Location
+			if n.Owner.Username == "" || n.Location == nil {
+				mm := hookGetMedia(v.Node)
+				if n.Owner.Username == "" {
+					n.Owner.Username = mm.Owner.Username
+				}
+				if n.Location == nil {
+					n.Location = mm.Location
+				}
+			}
+
 			hook(n)
 		}
 	}
+
 	//NextScroll
 	if src.PageInfo.HasNextPage && (total == -1 || (count+70) < total) {
 		count += 50
