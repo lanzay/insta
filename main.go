@@ -150,13 +150,19 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 	defer res.Body.Close()
 
 	if res.StatusCode == 429 {
-		log.Println(u)
-		log.Println("[I] Rate limit 5000 pet hour. Wait 1 min...")
-		time.Sleep(1 * time.Minute)
-		try++
-		return GetNextScroll(query_hash, p1, v1, count, after, try)
-		return nil
+		if bytes.Contains(body, []byte(`{"message": "rate limited", "status": "fail"}`)) {
+			log.Println("[I] Rate limit 5000 pet hour. Wait 1 min...")
+			time.Sleep(1 * time.Minute)
+			try++
+			return GetNextScroll(query_hash, p1, v1, count, after, try)
+			return nil
+		} else {
+			log.Println("[E] StatusCode==429 But any problem", u)
+			log.Println("[E] StatusCode==429 But any problem Body\n", string(body))
+			return nil
+		}
 	}
+
 	if res.StatusCode != 200 {
 		log.Println("[E] E005", string(body))
 		log.Println("[E] E005", res.StatusCode, err)
