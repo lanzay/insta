@@ -134,6 +134,7 @@ func getQueryHash(body []byte, targetType TargetType) string {
 
 func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) *models.InstaNext {
 
+	try++
 	variables := fmt.Sprintf("{\"%s\":\"%s\",\"first\":%d,\"after\":\"%s\"}", p1, v1, count, after)
 	u := fmt.Sprintf(`https://www.instagram.com/graphql/query/?query_hash=%s&variables=%s`, query_hash, variables)
 
@@ -153,7 +154,6 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 		if bytes.Contains(body, []byte(`{"message": "rate limited", "status": "fail"}`)) {
 			log.Println("[I] Rate limit 5000 pet hour. Wait 1 min...")
 			time.Sleep(1 * time.Minute)
-			try++
 			return GetNextScroll(query_hash, p1, v1, count, after, try)
 			return nil
 		} else {
