@@ -96,22 +96,6 @@ func getJSONFromBody(body []byte) []byte {
 	return body[s : s+e]
 }
 
-//depricated
-func getJSONFromBodyAdditionalDataLoaded(body []byte) []byte {
-
-	start := `window.__additionalDataLoaded('/p/`
-	end := ");</script>"
-	// window.__additionalDataLoaded('/p/B9sQjP9BZRZ/',{"graphql":
-
-	s := bytes.Index(body, []byte(start)) + len(start)
-	if s > 0 {
-		ss := bytes.Index(body[s:], []byte("/',")) + len("/',")
-		s += ss
-	}
-	e := bytes.Index(body[s:], []byte(end))
-	return body[s : s+e]
-}
-
 type TargetType int
 
 const (
