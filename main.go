@@ -157,8 +157,8 @@ func GetNextScroll(query_hash, p1, v1 string, count int, after string, try int) 
 			return GetNextScroll(query_hash, p1, v1, count, after, try)
 			return nil
 		} else {
-			log.Println("[E] StatusCode==429 But any problem", u)
-			log.Println("[E] StatusCode==429 But any problem Body\n", string(body))
+			log.Println("[E] StatusCode: 429 But any problem", u)
+			log.Println(string(body))
 			return nil
 		}
 	}
